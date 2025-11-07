@@ -1,4 +1,4 @@
-# Audio Recording Platform
+# Distributed Audio-Recording Platform
 
 A distributed audio recording and streaming platform built with Java EE technologies. The system implements a microservices-like architecture with multiple subsystems communicating through JMS (Java Message Service) and exposing RESTful APIs.
 
