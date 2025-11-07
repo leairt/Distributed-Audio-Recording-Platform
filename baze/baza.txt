@@ -1,0 +1,98 @@
+-- Mesto
+CREATE TABLE Mesto (
+    Naziv VARCHAR(100) PRIMARY KEY
+);
+
+-- Korisnik
+CREATE TABLE Korisnik (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Ime VARCHAR(100) UNIQUE NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Godiste INT NOT NULL,
+    Pol ENUM('M','Z') NOT NULL,
+    Mesto VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Mesto) REFERENCES Mesto(Naziv)
+);
+
+-- AudioSnimak
+CREATE TABLE AudioSnimak (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Naziv VARCHAR(200) NOT NULL,
+    Trajanje INT NOT NULL,
+    IdVlasnik INT NOT NULL,
+    Postavljeno DATETIME NOT NULL, -- datum i vreme postavljanja
+    FOREIGN KEY (IdVlasnik) REFERENCES Korisnik(Id)
+);
+
+-- Kategorija
+CREATE TABLE Kategorija (
+    Naziv VARCHAR(100) PRIMARY KEY
+);
+
+-- Veza (vise u vise) AudioSnimak - Kategorija
+CREATE TABLE VezaAudioKategorija (
+    IdAudioSnimak INT NOT NULL,
+    Kategorija VARCHAR(100) NOT NULL,
+    PRIMARY KEY (IdAudioSnimak, Kategorija),
+    FOREIGN KEY (IdAudioSnimak) REFERENCES AudioSnimak(Id),
+    FOREIGN KEY (Kategorija) REFERENCES Kategorija(Naziv)
+);
+
+-- Paket
+CREATE TABLE Paket (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Naziv VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- CenaPaketa
+CREATE TABLE CenaPaketa (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    IdPaket INT NOT NULL,
+    Cena DECIMAL(10,2) NOT NULL,
+    Mesec DATE NOT NULL, -- prvi dan tog meseca
+    FOREIGN KEY (IdPaket) REFERENCES Paket(Id)
+);
+
+-- Pretplata
+CREATE TABLE Pretplata (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    IdKorisnik INT NOT NULL,
+    IdPaket INT NOT NULL,
+    Pocetak DATETIME NOT NULL, -- datum i vreme pocetka
+    Cena DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (IdKorisnik) REFERENCES Korisnik(Id),
+    FOREIGN KEY (IdPaket) REFERENCES Paket(Id)
+    -- !!! Pretplatu nije moguće kreirati ako već postoji pretplata tog korisnika koja i dalje traje.
+);
+
+-- Slusanje
+CREATE TABLE Slusanje (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    IdKorisnik INT NOT NULL,
+    IdAudioSnimak INT NOT NULL,
+    DatumVremePocetka DATETIME NOT NULL,
+    SekundaPocetka INT NOT NULL,
+    TrajanjeOdslusanihSekundi INT NOT NULL,
+    FOREIGN KEY (IdKorisnik) REFERENCES Korisnik(Id),
+    FOREIGN KEY (IdAudioSnimak) REFERENCES AudioSnimak(Id)
+);
+
+-- Ocena
+CREATE TABLE Ocena (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    IdKorisnik INT NOT NULL,
+    IdAudioSnimak INT NOT NULL,
+    Ocena INT NOT NULL CHECK (Ocena BETWEEN 1 AND 5),
+    DatumVreme DATETIME NOT NULL,
+    FOREIGN KEY (IdKorisnik) REFERENCES Korisnik(Id),
+    FOREIGN KEY (IdAudioSnimak) REFERENCES AudioSnimak(Id)
+);
+
+-- OmiljeniAudioSnimak
+CREATE TABLE OmiljeniAudioSnimak (
+    IdKorisnik INT NOT NULL,
+    IdAudioSnimak INT NOT NULL,
+    PRIMARY KEY (IdKorisnik, IdAudioSnimak),
+    FOREIGN KEY (IdKorisnik) REFERENCES Korisnik(Id),
+    FOREIGN KEY (IdAudioSnimak) REFERENCES AudioSnimak(Id)
+);

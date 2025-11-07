@@ -1,0 +1,99 @@
+-- Mesta
+INSERT INTO Mesto (Naziv) VALUES
+('Beograd'),
+('Novi Sad'),
+('Niš'),
+('Valjevo'),
+('Kragujevac');
+
+-- Korisnici
+INSERT INTO Korisnik (Id, Ime, Email, Godiste, Pol, Mesto) VALUES
+(1, 'leairt',    'irtlea@yahoo.com',    2003, 'Z', 'Beograd'),
+(2, 'bgdj',  'bgdj@gmail.com',  2002, 'M', 'Novi Sad'),
+(3, 'sergej', 'sergej@zzi.com', 2007, 'Z', 'Niš'),
+(4, 'nikola', 'nikola@gmail.com', 1990, 'M', 'Valjevo'),
+(5, 'petar',  'petar@yahoo.com',  1992, 'M', 'Kragujevac'),
+(6, 'ana',  'anci@gmail.com',  1998, 'Z', 'Beograd');
+
+-- Kategorije
+INSERT INTO Kategorija (Naziv) VALUES
+('Muzika'), ('Podcast'), ('Audioknjiga'), ('ASMR'),
+('Sport'), ('Vesti'), ('Edukacija'), ('Ambient');
+
+-- Audio snimci
+INSERT INTO AudioSnimak (Id, Naziv, Trajanje, IdVlasnik, Postavljeno) VALUES
+(1, 'AC/DC Best of',         210, 1, '2025-07-01 12:00:00'),
+(2, 'Tech Podcast #1',   3600, 2, '2025-07-05 18:00:00'),
+(3, 'Na Drini ćuprija: Poglavlje 1',1800, 3, '2025-06-20 09:30:00'),
+(4, 'ASMR kiša',         1200, 1, '2025-08-10 22:00:00'),
+(5, 'Sportski pregled',   900, 2, '2025-08-15 08:00:00'),
+(6, 'Ambient: Muzika za učenje',  2400, 4, '2025-06-10 06:00:00');
+
+-- Povezivanje snimaka i kategorija
+INSERT INTO VezaAudioKategorija (IdAudioSnimak, Kategorija) VALUES
+(1, 'Muzika'),
+(2, 'Podcast'), (2, 'Edukacija'),
+(3, 'Audioknjiga'),
+(4, 'ASMR'),
+(5, 'Sport'), (5, 'Vesti'),
+(6, 'Ambient'), (6, 'Muzika');
+
+-- Paketi
+INSERT INTO Paket (Id, Naziv) VALUES
+(1, 'Basic Paket'),
+(2, 'Premium Paket'),
+(3, 'Family Paket'),
+(4, 'Ultra Pro Max Paket');
+
+-- Cene paketa po mesecima (Mesec - prvi dan tog meseca)
+INSERT INTO CenaPaketa (Id, IdPaket, Cena, Mesec) VALUES
+-- Basic
+(1, 1,  699.00, '2025-06-01'),
+(2, 1,  749.00, '2025-07-01'),
+(3, 1,  799.00, '2025-08-01'),
+-- Premium
+(4, 2, 1099.00, '2025-06-01'),
+(5, 2, 1199.00, '2025-07-01'),
+(6, 2, 1299.00, '2025-08-01'),
+-- Family
+(7, 3, 1699.00, '2025-06-01'),
+(8, 3, 1799.00, '2025-07-01'),
+(9, 3, 1899.00, '2025-08-01'),
+-- Ultra Pro Max
+(10, 4, 2499.00, '2025-06-01'),
+(11, 4, 2599.00, '2025-07-01'),
+(12, 4, 2699.00, '2025-08-01');
+
+-- Pretplate
+INSERT INTO Pretplata (Id, IdKorisnik, IdPaket, Pocetak, Cena) VALUES
+(1, 1, 4, '2025-07-10 09:00:00', 1199.00),
+(2, 2, 1, '2025-08-01 00:00:00',  799.00),
+(3, 3, 3, '2025-06-25 12:00:00', 1699.00),
+(4, 4, 2, '2025-08-01 13:20:00', 2799.00),
+(5, 5, 1, '2025-06-13 21:10:00', 1299.00),
+(6, 6, 3, '2025-06-21 12:24:00', 1399.00);
+
+-- Slušanja
+INSERT INTO Slusanje (Id, IdKorisnik, IdAudioSnimak, DatumVremePocetka, SekundaPocetka, TrajanjeOdslusanihSekundi) VALUES
+(1, 1, 2, '2025-07-10 10:00:00',  0, 600),
+(2, 2, 1, '2025-08-01 09:15:00', 30, 120),
+(3, 3, 3, '2025-06-25 13:00:00',  0, 900),
+(4, 4, 4, '2025-08-12 23:00:00',  0, 600),
+(5, 5, 6, '2025-06-15 07:00:00',  0, 300),
+(6, 1, 5, '2025-08-16 09:00:00',  0, 450);
+
+-- Ocene (1..5)
+INSERT INTO Ocena (Id, IdKorisnik, IdAudioSnimak, Ocena, DatumVreme) VALUES
+(1, 1, 1, 5, '2025-07-02 12:30:00'),
+(2, 2, 2, 4, '2025-07-06 19:00:00'),
+(3, 3, 3, 5, '2025-06-26 14:00:00'),
+(4, 4, 4, 3, '2025-08-12 23:30:00'),
+(5, 5, 6, 4, '2025-06-15 08:00:00');
+
+-- Omiljeni snimci
+INSERT INTO OmiljeniAudioSnimak (IdKorisnik, IdAudioSnimak) VALUES
+(1,1), (1,4),
+(2,2),
+(3,3),
+(4,6),
+(5,5), (5,6);
