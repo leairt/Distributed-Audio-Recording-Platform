@@ -1,10 +1,10 @@
-# Audio Recording Platform
+# Distributed Audio-Recording Platform
 
-A distributed audio recording and streaming platform built with Java EE technologies. The system implements a microservices-like architecture with multiple subsystems communicating through JMS (Java Message Service) and exposing RESTful APIs.
+A enterprise-grade distributed audio recording and streaming platform built with Java EE technologies. The system implements a microservices architecture with multiple subsystems communicating through JMS (Java Message Service) and exposing RESTful APIs for seamless integration.
 
 ## Overview
 
-This platform enables users to upload, categorize, and manage audio recordings while supporting a subscription-based model with different package tiers. The system tracks user activity, audio playback statistics, and manages pricing dynamically across different time periods.
+This platform enables users to upload, categorize, and manage audio recordings while supporting a subscription-based model with different package tiers. The system provides comprehensive analytics, tracks user activity, audio playback statistics, and manages dynamic pricing across different time periods.
 
 ## Architecture
 
@@ -45,83 +45,129 @@ The application consists of four main components:
 
 ## Technology Stack
 
-- **Java EE**: Core application framework
-- **JPA (Java Persistence API)**: Object-relational mapping and database operations
-- **JMS (Java Message Service)**: Asynchronous inter-subsystem communication
-- **REST (JAX-RS)**: HTTP-based API for client-server communication
-- **MySQL**: Relational database management
-- **Maven**: Dependency management and build automation
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| **Java EE** | Core application framework | 11 |
+| **JPA** | Object-relational mapping and database operations | 2.2 |
+| **JMS** | Asynchronous inter-subsystem communication | 2.0 |
+| **JAX-RS** | RESTful web services | 2.1 |
+| **MySQL** | Relational database management | 8.0+ |
+| **Maven** | Dependency management and build automation | 3.6+ |
 
-## Key Features
+The project runs on **GlassFish 5**, used as the Java EE application server.
 
-### User Management
-- User registration with demographic data
-- Email and username uniqueness validation
-- Location-based user organization
-- User profile updates
+## Features
 
-### Audio Recording Management
-- Audio file upload with metadata
-- Multi-category classification support
-- Duration tracking
-- Owner attribution
-- Timestamp-based sorting
+### Core Functionality
+- User registration and authentication
+- Audio file upload and management  
+- Category-based content organization
+- Subscription package management
+- Real-time playback tracking
+- Comprehensive analytics dashboard
 
-### Subscription System
-- Multiple package tiers
-- Time-based pricing flexibility
-- Subscription activation and expiration tracking
-- Package upgrade/downgrade capability
+### Technical Features
+- Distributed microservices architecture
+- Asynchronous message processing
+- RESTful API with JSON responses
+- Database transaction management
+- Event-driven communication
+- Scalable horizontal architecture
 
-### Analytics and Statistics
-- User activity tracking
-- Audio playback metrics
-- Listening duration analysis
-- Category popularity statistics
-- User engagement metrics
 
-### Event-Driven Communication
-- JMS topics for inter-subsystem events
-- Asynchronous processing
-- Loose coupling between components
-- Scalable message handling
 
-## REST API Endpoints
+## API Documentation
 
-The platform exposes RESTful endpoints for:
-- User CRUD operations
-- Audio recording management
-- Category assignment
-- Package subscription
-- Statistics retrieval
-- Search and filtering
+### REST Endpoints
 
-## Message Queue Topics
-
-JMS topics facilitate communication:
-- User creation events
-- Audio upload notifications
-- Subscription changes
-- Playback tracking events
-
-## Project Structure
-
+#### User Management
+```http
+GET    /api/users              # List all users
+POST   /api/users              # Create new user
+GET    /api/users/{id}          # Get user by ID
+PUT    /api/users/{id}          # Update user
+DELETE /api/users/{id}          # Delete user
 ```
-IS1 - PREDAJA/
-├── baze/
-│   ├── baza.txt          # Database schema DDL
-│   └── podaci.txt        # Sample data DML
-├── java aplikacije/
-│   ├── centralni_server.zip
-│   ├── podsistem1.zip
-│   ├── podsistem2.zip
-│   ├── podsistem3.zip
-│   ├── klijentska_aplikacija.zip
-│   └── libs/             # Shared libraries
-└── uml/
-    ├── klase/            # Class diagrams
-    └── sekvenca/         # Sequence diagrams
+
+#### Audio Management
+```http
+GET    /api/audio              # List audio recordings
+POST   /api/audio              # Upload new recording
+GET    /api/audio/{id}          # Get recording details
+PUT    /api/audio/{id}          # Update recording metadata
+DELETE /api/audio/{id}          # Delete recording
 ```
+
+#### Package Management
+```http
+GET    /api/packages           # List subscription packages
+POST   /api/subscriptions      # Subscribe to package
+GET    /api/subscriptions/{id} # Get subscription details
+```
+
+#### Statistics
+```http
+GET    /api/stats/users        # User statistics
+GET    /api/stats/audio        # Audio playback statistics
+GET    /api/stats/categories   # Category popularity
+```
+
+## Database Schema
+
+The platform uses a normalized MySQL database schema with the following key entities:
+
+### Core Tables
+
+**Mesto (Location)**
+```sql
+CREATE TABLE Mesto (
+    Naziv VARCHAR(100) PRIMARY KEY
+);
+```
+
+**Korisnik (User)**
+```sql
+CREATE TABLE Korisnik (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Ime VARCHAR(100) UNIQUE NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Godiste INT NOT NULL,
+    Pol ENUM('M','Z') NOT NULL,
+    Mesto VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Mesto) REFERENCES Mesto(Naziv)
+);
+```
+
+**AudioSnimak (Audio Recording)**
+```sql
+CREATE TABLE AudioSnimak (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Naziv VARCHAR(200) NOT NULL,
+    Trajanje INT NOT NULL,
+    IdVlasnik INT NOT NULL,
+    Postavljeno DATETIME NOT NULL,
+    FOREIGN KEY (IdVlasnik) REFERENCES Korisnik(Id)
+);
+```
+
+For complete schema details, see `baze/baza.txt`.
+
+## Usage
+
+### For End Users
+
+1. **Registration**: Create an account with personal information
+2. **Subscription**: Choose and subscribe to a package tier
+3. **Upload**: Upload audio files with metadata and categories
+4. **Browse**: Discover and play audio content
+5. **Analytics**: View personal listening statistics
+
+### For Administrators
+
+1. **Package Management**: Create and modify subscription packages
+2. **Pricing**: Set time-based pricing strategies
+3. **Monitoring**: Track platform usage and user engagement
+4. **Analytics**: Generate comprehensive reports
 
 ## Use Cases
 
@@ -139,40 +185,3 @@ IS1 - PREDAJA/
 3. View platform-wide statistics
 4. Monitor user activity
 5. Analyze category popularity
-
-## Business Logic
-
-### Subscription Validation
-- Active subscriptions enable audio playback
-- Expired subscriptions require renewal
-- Package changes handled with grace periods
-
-### Pricing Strategy
-- Time-based pricing allows promotional periods
-- Historical pricing preserved for reporting
-- Package price lookup based on subscription start date
-
-### Statistics Generation
-- Real-time playback tracking
-- Aggregated metrics calculation
-- Category-based analytics
-- User engagement scoring
-
-## Development Notes
-
-### JPA Relationships
-- One-to-Many: Korisnik to AudioSnimak
-- One-to-Many: Korisnik to Pretplata
-- One-to-Many: Paket to CenaPaketa
-- Many-to-Many: AudioSnimak to Kategorija
-
-### JMS Message Flow
-1. Subsystem 1/2 publishes entity creation events
-2. Subsystem 3 consumes events for statistics
-3. Central server coordinates message routing
-
-### Error Handling
-- Database constraint validation
-- JMS message delivery guarantees
-- REST API error responses
-- Transaction rollback on failures
